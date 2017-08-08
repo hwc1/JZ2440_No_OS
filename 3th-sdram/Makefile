@@ -1,5 +1,5 @@
 all : start.o main.o init.o uart.o
-	arm-linux-ld -Ttext 0 -o sdram.elf $^
+	arm-linux-ld -Ttext 0x30000000 -o sdram.elf $^
 	arm-linux-objcopy -O binary sdram.elf sdram.bin
 	arm-linux-objdump -D -S -h -m arm sdram.elf >sdram.dis
 
