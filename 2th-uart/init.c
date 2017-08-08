@@ -6,7 +6,7 @@
 void clock_init(void)
 {
 	CLKDIVN = 0x03;
-	LOCKTIME = 0xffffffff;
+	LOCKTIME = 0xFFFFFFFF;
 	MPLLCON = 0x0007f021;
 	UPLLCON = 0x00038022;
 }

@@ -23,7 +23,7 @@ void init_uart(void)
 	//设置端口
 	GPHCON &= ~(GPH3_msk | GPH2_msk);
 	GPHCON |= (GPH3_rx | GPH2_tx);
-	GPHUP   = 0x0c;     
+	GPHUP   = 0x0c;     // GPH2,GPH3内部上拉
 	
 	//设置数据格式
 	ULCON0 = 0x3;	
