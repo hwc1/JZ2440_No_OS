@@ -28,8 +28,15 @@ int main(void)
 
 	init_uart();
 
-	uart_putc("H");
-	uart_putc("e");
+	uart_putc('H');
+	uart_putc('e');
+	uart_putc('l');
+	uart_putc('l');
+	uart_putc('o');
+	uart_putc(0x12);
+	uart_putc(0x34);
+	uart_putc(0x56);
+	uart_putc(0x78);
 
 	//设置GPIO端口
 	GPFCON &= ~(GPF4_MSK | GPF5_MSK | GPF6_MSK);
@@ -38,21 +45,8 @@ int main(void)
 	//进入死循环
 	while(1)
 	{
-		//操作LED
-		GPFDAT |= cnt;
-		delay();
-
-		if(i >= 3){
-			i = 0;
-			cnt = 0x10;
-		}else{
-			cnt <<= 1;
-		}
-
-		GPFDAT &= ~cnt;
-		delay();
-
-		i++;
+		cnt = uart_getc();
+		uart_putc(cnt);
 	}
 
 	return 0;
