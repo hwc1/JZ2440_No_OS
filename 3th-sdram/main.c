@@ -1,13 +1,13 @@
 #define GPFCON    (*(volatile unsigned long *)(0x56000050))
 #define GPFDAT    (*(volatile unsigned long *)(0x56000054))
 
-#define GPF4_MSK (0b11 << 8)
-#define GPF5_MSK (0b11 << 10)
-#define GPF6_MSK (0b11 << 12)
+#define GPF4_MSK (0x3 << 8)
+#define GPF5_MSK (0x3 << 10)
+#define GPF6_MSK (0x3 << 12)
 
-#define GPF4_OUT (0b01 << 8)
-#define GPF5_OUT (0b01 << 10)
-#define GPF6_OUT (0b01 << 12)
+#define GPF4_OUT (0x1 << 8)
+#define GPF5_OUT (0x1 << 10)
+#define GPF6_OUT (0x1 << 12)
 
 void delay(void)
 {
@@ -25,9 +25,16 @@ int main(void)
 {
 	int i = 0;
 	unsigned char cnt = 0x10;
-	//设置GPIO端口
+	unsigned char buff[20];
+	unsigned int addr = (unsigned int)buff;
+
 	GPFCON &= ~(GPF4_MSK | GPF5_MSK | GPF6_MSK);
 	GPFCON |= (GPF4_OUT | GPF5_OUT | GPF6_OUT);
+
+	uart_putc(addr & 0xff);
+	uart_putc((addr >> 8) & 0xff);
+	uart_putc((addr >> 16) & 0xff);
+	uart_putc((addr >> 24) & 0xff);
 
 	//进入死循环
 	while(1)

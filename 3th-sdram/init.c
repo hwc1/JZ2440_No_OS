@@ -7,12 +7,13 @@
 
 void clock_init(void)
 {
-	CLKDIVN = 0x03;
+	CLKDIVN = 0x05;
 	LOCKTIME = 0xFFFFFFFF;
 	MPLLCON = 0x0007f021;
 	UPLLCON = 0x00038022;
 }
 
+#if 0
 void init_sdram(void)
 {
 	volatile unsigned long *p = (volatile unsigned long *)MEM_BASE;
@@ -26,9 +27,23 @@ void init_sdram(void)
 	*(p + 6) = 0x00000700;
 	*(p + 7) = 0x00018005;
 	*(p + 8) = 0x00018005;
-	*(p + 9) = 0x008C07A3;
+	*(p + 9) = 0x008C04F4;
 	*(p + 10) = 0x000000B1;
 	*(p + 11) = 0x00000030;
 	*(p + 12) = 0x00000030;
+}
+#endif
+
+void copy_to_sdram(void)
+{
+	int i = 0;
+
+	unsigned char *src = (unsigned char *)0;
+	unsigned char *dst = (unsigned char *)0x30000000;
+
+	for(i = 0; i < 4096; i++)
+	{
+		*(dst + i) = *(src + i);
+	}
 }
 
