@@ -1,0 +1,58 @@
+tftp 0x30000000 nand.bin; nand erase bootloader; nand write 0x30000000 bootloader
+
+1. 初始化NAND 链接地址0 读NAND ID 发送NAND ID
+		串口输出：EC DA 10 95 44 
+		正确
+
+2. 初始化NAND 链接地址0 从NAND0地址开始，读10字节数据到buff 发送buff 通过指针发送SRAM的前10字节数据
+		串口输出：37 37 37 BF FF FF FF FF FF FF 
+							00 00 0F E1 1F 00 C0 E3 D3 00 
+		说明读nand 函数出错
+
+3. 修改Nand_read 初始化NAND 链接地址0 从NAND0地址开始，读10字节数据到buff 发送buff 然后将buff地址发送出
+		修改的内容是Nand_read 里面发送地址的部分，将所有地址设置为0
+
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		D4 0F 00 00 
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		说明修改之后的Nand_read是正确的
+
+4. 修改程序，读NAND ID到然后将buff地址发送出
+EC DA 10 95 44 05 00 00 6C 04 
+D4 0F 00 00 == 4052
+
+5. 继续修改，编写任意位置读NAND函数，即将3中省略的地址补上
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		D4 0F 00 00 
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+
+
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		D4 0F 00 00 
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		00 10 A0 E3 00 10 80 E5 00 10 
+		00 10 A0 E3 00 10 80 E5 00 10 
+		说明读NAND flash正确
+
+		修改链接地址为0x30000000
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		D4 0F 00 00 
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		00 10 A0 E3 00 10 80 E5 00 10 
+		00 10 A0 E3 00 10 80 E5 00 10 
+
+6. 初始化SDRAM，链接地址为0x30000000 把程序从nand复制到内存中 跳转到内存中执行
+		start.S中使用bl main
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		D4 0F 00 00 
+		00 00 0F E1 1F 00 C0 E3 D3 00 
+		
+		00 10 A0 E3 00 10 80 E5 00 10 
+		00 10 A0 E3 00 10 80 E5 00 10 
+		程序仍然运行在sram中
+
+		start.S中使用ldr pc, =main
+		程序直接错误。
+		程序到sdram运行，出错，说明SDRAM初始化不正确或者读nand到SDRAM不正确,暂时把错误锁定在SDRAM配置错误
+		
+
