@@ -13,7 +13,6 @@ void clock_init(void)
 	UPLLCON = 0x00038022;
 }
 
-#if 0
 void init_sdram(void)
 {
 	volatile unsigned long *p = (volatile unsigned long *)MEM_BASE;
@@ -32,7 +31,6 @@ void init_sdram(void)
 	*(p + 11) = 0x00000030;
 	*(p + 12) = 0x00000030;
 }
-#endif
 
 void copy_to_sdram(void)
 {
